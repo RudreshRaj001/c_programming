@@ -14,14 +14,15 @@ c-programming/
 │   └── project_name.c
 ├── bin/
 │   └── (compiled executables will go here)
+├── build.bat
 └── README.md
 ```
 
 -----
 
-## 🛠️ Development Workflow
+## 🛠️ Manual Development Workflow
 
-Follow these steps to compile and run any project in this repository. All commands should be run from the root directory of the project (`c_programming/`).
+Follow these steps to manually compile and run any project. All commands should be run from the root directory.
 
 ### 1\. Write Your Code
 
@@ -29,38 +30,61 @@ Place your C source file (e.g., `my_project.c`) inside the `/src` directory.
 
 ### 2\. Compile the Code
 
-Use the `gcc` compiler to build your program. The `-o` flag is used to specify the output path and filename for the executable, which should be in the `bin` folder.
-
-**Generic Command:**
+Use `gcc` to build your program. The `-o` flag specifies the output path.
 
 ```bash
+# Generic command
 gcc src/<your_file_name>.c -o bin/<your_executable_name>
+
+# Example
+gcc src/guess_the_number.c -o bin/guess_the_number
 ```
 
 ### 3\. Run the Program
 
-Execute the compiled program from the `bin` directory. In PowerShell or Git Bash, you must prefix the command with `.\` to specify the current directory.
-
-**Generic Command:**
+Execute the compiled program from the `bin` directory. Remember to use `.\` in PowerShell or Git Bash.
 
 ```powershell
+# Generic command
 .\bin\<your_executable_name>
+
+# Example
+.\bin\guess_the_number
 ```
 
 -----
 
-## ✨ Example: `guess_the_number` Project
+## ⚡ Automated Compilation (File Watching)
 
-Here is how to compile and run the `guess_the_number` project as an example.
+To automatically re-compile your code every time you save a file, you can use the `chokidar-cli` file watcher.
 
-**1. Compilation:**
+### 1\. Create a Build Script
 
-```bash
-gcc src/guess_the_number.c -o bin/guess_the_number
+First, create a helper script named **`build.bat`** in the root of your project. This script will handle the compilation command.
+
+**`build.bat`**
+
+```batch
+@echo off
+echo [Compiler] Building %1...
+gcc %1 -o bin/%~n1
+echo [Compiler] Successfully created bin/%~n1.exe
 ```
 
-**2. Execution:**
+### 2\. Install the File Watcher
+
+You'll need Node.js and npm installed for this step. Install `chokidar-cli` globally from your terminal.
 
 ```powershell
-.\bin\guess_the_number
+npm install -g chokidar-cli
 ```
+
+### 3\. Start the Watcher
+
+Run the following command in your terminal. It will watch all `.c` files in the `src` folder and run the `build.bat` script whenever a change is detected.
+
+```powershell
+chokidar "src/**/*.c" -c "build.bat {path}"
+```
+
+Now, just save your C file, and the new executable will be created in the `bin` folder instantly\!
